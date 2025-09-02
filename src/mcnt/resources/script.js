@@ -68,7 +68,7 @@ onUpdateHook.push(function () {
         if (shuffledIndex !== -1) {
           let replacementText;
           if (isDisplayAnswerLetters) {
-            // If letters are already shown, use the letter for the reference.
+            // If letters are shown, use the letter for the reference.
             replacementText = String.fromCharCode(shuffledIndex + 65);
           } else {
             // If letters are NOT shown, use the ordinal number to identify the answer.

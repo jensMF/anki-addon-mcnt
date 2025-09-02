@@ -99,6 +99,7 @@ def setup_note_type(col: Collection) -> None:
     # --- Configure Back Template ---
     back_template = load_file(back_template_path)
     back_template = back_template.replace("__IS_DISPLAY_ANSWER_LETTERS__", str(isDisplayAnswerLetters).lower())
+    back_template = back_template.replace('"__TTS_LANG__"', f'"{lang_code}"')
 
     tts_back_html = "<b>Explanation: </b>"
     if isTTS:

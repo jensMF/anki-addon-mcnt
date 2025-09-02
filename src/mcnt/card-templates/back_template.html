@@ -1,84 +1,189 @@
 <script>
-	// v1.1.8 - https://github.com/SimonLammer/anki-persistence/blob/584396fea9dea0921011671a47a0fdda19265e62/script.js
-	if(void 0===window.Persistence){var e="github.com/SimonLammer/anki-persistence/",t="_default";if(window.Persistence_sessionStorage=function(){var i=!1;try{"object"==typeof window.sessionStorage&&(i=!0,this.clear=function(){for(var t=0;t<sessionStorage.length;t++){var i=sessionStorage.key(t);0==i.indexOf(e)&&(sessionStorage.removeItem(i),t--)}},this.setItem=function(i,n){void 0==n&&(n=i,i=t),sessionStorage.setItem(e+i,JSON.stringify(n))},this.getItem=function(i){return void 0==i&&(i=t),JSON.parse(sessionStorage.getItem(e+i))},this.removeItem=function(i){void 0==i&&(i=t),sessionStorage.removeItem(e+i)},this.getAllKeys=function(){for(var t=[],i=Object.keys(sessionStorage),n=0;n<i.length;n++){var s=i[n];0==s.indexOf(e)&&t.push(s.substring(e.length,s.length))}return t.sort()})}catch(n){}this.isAvailable=function(){return i}},window.Persistence_windowKey=function(i){var n=window[i],s=!1;"object"==typeof n&&(s=!0,this.clear=function(){n[e]={}},this.setItem=function(i,s){void 0==s&&(s=i,i=t),n[e][i]=s},this.getItem=function(i){return void 0==i&&(i=t),void 0==n[e][i]?null:n[e][i]},this.removeItem=function(i){void 0==i&&(i=t),delete n[e][i]},this.getAllKeys=function(){return Object.keys(n[e])},void 0==n[e]&&this.clear()),this.isAvailable=function(){return s}},window.Persistence=new Persistence_sessionStorage,Persistence.isAvailable()||(window.Persistence=new Persistence_windowKey("py")),!Persistence.isAvailable()){var i=window.location.toString().indexOf("title"),n=window.location.toString().indexOf("main",i);i>0&&n>0&&n-i<10&&(window.Persistence=new Persistence_windowKey("qt"))}}
+    // v1.1.8 - https://github.com/SimonLammer/anki-persistence/blob/584396fea9dea0921011671a47a0fdda19265e62/script.js
+    if (typeof window.Persistence === "undefined") {
+        var e = "github.com/SimonLammer/anki-persistence/",
+            t = "_default";
+        if (
+            ((window.Persistence_sessionStorage = function () {
+                var i = !1;
+                try {
+                    "object" == typeof window.sessionStorage &&
+                        ((i = !0),
+                        (this.clear = function () {
+                            for (var t = 0; t < sessionStorage.length; t++) {
+                                var i = sessionStorage.key(t);
+                                0 == i.indexOf(e) &&
+                                    (sessionStorage.removeItem(i), t--);
+                            }
+                        }),
+                        (this.setItem = function (i, n) {
+                            (void 0 == n && ((n = i), (i = t)),
+                                sessionStorage.setItem(
+                                    e + i,
+                                    JSON.stringify(n),
+                                ));
+                        }),
+                        (this.getItem = function (i) {
+                            return (
+                                void 0 == i && (i = t),
+                                JSON.parse(sessionStorage.getItem(e + i))
+                            );
+                        }),
+                        (this.removeItem = function (i) {
+                            (void 0 == i && (i = t),
+                                sessionStorage.removeItem(e + i));
+                        }),
+                        (this.getAllKeys = function () {
+                            for (
+                                var t = [],
+                                    i = Object.keys(sessionStorage),
+                                    n = 0;
+                                n < i.length;
+                                n++
+                            ) {
+                                var s = i[n];
+                                0 == s.indexOf(e) &&
+                                    t.push(s.substring(e.length, s.length));
+                            }
+                            return t.sort();
+                        }));
+                } catch (n) {}
+                this.isAvailable = function () {
+                    return i;
+                };
+            }),
+            (window.Persistence_windowKey = function (i) {
+                var n = window[i],
+                    s = !1;
+                ("object" == typeof n &&
+                    ((s = !0),
+                    (this.clear = function () {
+                        n[e] = {};
+                    }),
+                    (this.setItem = function (i, s) {
+                        (void 0 == s && ((s = i), (i = t)), (n[e][i] = s));
+                    }),
+                    (this.getItem = function (i) {
+                        return (
+                            void 0 == i && (i = t),
+                            void 0 == n[e][i] ? null : n[e][i]
+                        );
+                    }),
+                    (this.removeItem = function (i) {
+                        (void 0 == i && (i = t), delete n[e][i]);
+                    }),
+                    (this.getAllKeys = function () {
+                        return Object.keys(n[e]);
+                    }),
+                    void 0 == n[e] && this.clear()),
+                    (this.isAvailable = function () {
+                        return s;
+                    }));
+            }),
+            (window.Persistence = new Persistence_sessionStorage()),
+            Persistence.isAvailable() ||
+                (window.Persistence = new Persistence_windowKey("py")),
+            !Persistence.isAvailable())
+        ) {
+            var i = window.location.toString().indexOf("title"),
+                n = window.location.toString().indexOf("main", i);
+            i > 0 &&
+                n > 0 &&
+                n - i < 10 &&
+                (window.Persistence = new Persistence_windowKey("qt"));
+        }
+    }
 </script>
 
-{{#number}}<h3>Question #{{number}}</h3>{{/number}}
-{{#question}}<p>{{question}}</p>{{/question}}
+{{#number}}
+<h3>Question #{{number}}</h3>
+{{/number}} {{#question}}
+<p>{{question}}</p>
+{{/question}}
+<hr />
+<div id="answer-div"></div>
+<br />
+<hr />
 
-<div id="answer-div">
-
-</div>
-<br/>
-<hr>
-
-{{#answers}}<p id="display-answers"></p>{{/answers}}
-{{#ref}}<p><b>Ref: </b>{{ref}}</p>{{/ref}}
-{{#explanation}}<fieldset><legend id="tts"><b>Explanation: {{tts TTSLang speed=0.8 voices=Apple_Samantha,Microsoft_Haruka:explanation}}</b></legend>{{explanation}}</fieldset>{{/explanation}}
+{{#answers}}
+<p id="display-answers"></p>
+{{/answers}} {{#ref}}
+<p id="ref"><b>Ref: </b>{{ref}}</p>
+{{/ref}} {{#explanation}}
+<fieldset id="explanation">
+    <legend id="tts"><!-- TTS_BACK --></legend>
+    {{explanation}}
+</fieldset>
+{{/explanation}}
 
 <script>
+    // This variable is defined in the global scope so that the injected script can access it.
+    var answerJsonLookUp = {
+        {{#a}}"a" : { "id": "a", "answer": `{{a}}` },{{/a}}
+        {{#b}}"b" : { "id": "b", "answer": `{{b}}` },{{/b}}
+        {{#c}}"c" : { "id": "c", "answer": `{{c}}` },{{/c}}
+        {{#d}}"d" : { "id": "d", "answer": `{{d}}` },{{/d}}
+        {{#e}}"e" : { "id": "e", "answer": `{{e}}` },{{/e}}
+        {{#f}}"f" : { "id": "f", "answer": `{{f}}` },{{/f}}
+        {{#g}}"g" : { "id": "g", "answer": `{{g}}` },{{/g}}
+        {{#h}}"h" : { "id": "h", "answer": `{{h}}` },{{/h}}
+        {{#i}}"i" : { "id": "i", "answer": `{{i}}` },{{/i}}
+        {{#j}}"j" : { "id": "j", "answer": `{{j}}` },{{/j}}
+    };
 
-	function returnTemplate(inputType, index, id, answer, checked, a ,b, displayAnswerLetters) {
-		var result = '<div class="answer-div ' + a + '">';
-		result += '<div><input type="' + inputType + '" class="disabled-input" id="' + id + '" ' + checked + ' /></div>';
-		if (displayAnswerLetters)
-			result += '<div>' + String.fromCharCode(index + 65)+ '.</div>';
-		else
-			result += '<div>&nbsp;</div>';
-		result += '<div><label for="' + id + '">' + answer + '</label></div>';
-		result += '<div class="' + b + '"></div>';
-		result += '</div>';
-		return result;
-	}
+    onUpdateHook.push(function () {
+        // The code inside this hook runs only after the card's HTML is ready.
 
-	function checkAnswer(answer) {
-		if(selectedAnswer.includes(answer) && answersArray.includes(answer)) {
-			return "correct";
-		} 
+        function returnTemplate(inputType, index, id, answer, checked, a ,b, displayAnswerLetters) {
+            var result = '<div class="answer-div ' + a + '">';
+            result += '<div><input type="' + inputType + '" class="disabled-input" id="' + id + '" ' + checked + ' /></div>';
+            if (displayAnswerLetters) result += '<div>' + String.fromCharCode(index + 65)+ '.</div>';
+            else result += '<div>&nbsp;</div>';
+            result += '<div><label for="' + id + '">' + answer + '</label></div>';
+            result += '<div class="' + b + '"></div></div>';
+            return result;
+        }
 
-		if(!selectedAnswer.includes(answer) && answersArray.includes(answer)) {
-			return "missed";
-		} 
+        function checkAnswer(answerId, selectedAnswer, answersArray) {
+            if (!selectedAnswer) return answersArray.includes(answerId) ? "missed" : "";
+            if (selectedAnswer.includes(answerId) && answersArray.includes(answerId)) return "correct";
+            if (!selectedAnswer.includes(answerId) && answersArray.includes(answerId)) return "missed";
+            if (selectedAnswer.includes(answerId) && !answersArray.includes(answerId)) return "incorrect";
+            return "";
+        }
 
-		if(selectedAnswer.includes(answer) && !answersArray.includes(answer)) {
-			return "incorrect";
-		}
-	}
+        var answersArray = `{{answers}}`.toLowerCase().split(",");
 
-	var answersArray = `{{answers}}`.toLowerCase().split(",");
+        var selectedAnswer, divArray;
+        if (Persistence.isAvailable()) {
+            selectedAnswer = Persistence.getItem("SelectedAnswer");
+            divArray = Persistence.getItem("_MCNT_DivArray");
+        }
 
-	var answerJson = {
-		{{#a}}"a" : { "id": "a", "answer": `{{a}}` },{{/a}}
-		{{#b}}"b" : { "id": "b", "answer": `{{b}}` },{{/b}}
-		{{#c}}"c" : { "id": "c", "answer": `{{c}}` },{{/c}}
-		{{#d}}"d" : { "id": "d", "answer": `{{d}}` },{{/d}}
-		{{#e}}"e" : { "id": "e", "answer": `{{e}}` },{{/e}}
-		{{#f}}"f" : { "id": "f", "answer": `{{f}}` },{{/f}}
-		{{#g}}"g" : { "id": "g", "answer": `{{g}}` },{{/g}}
-		{{#h}}"h" : { "id": "h", "answer": `{{h}}` },{{/h}}
-		{{#i}}"i" : { "id": "i", "answer": `{{i}}` },{{/i}}
-		{{#j}}"j" : { "id": "j", "answer": `{{j}}` },{{/j}}
-	};
-	
+        if (divArray) {
+            var answerDiv = document.getElementById('answer-div');
+            if (answerDiv) answerDiv.innerHTML = "";
 
-	if (Persistence.isAvailable()) {
+            var answerDisplayArray = [];
+            for (var i = 0; i < divArray.length; i++) {
+                var answerId = divArray[i];
+                var answerDetails = answerJsonLookUp[answerId];
+                if (!answerDetails) continue;
 
-		var selectedAnswer = Persistence.getItem("SelectedAnswer");
-		var divArray = Persistence.getItem("DivArray");
-		
-		var answerDiv = document.getElementById('answer-div');
-		var answerDisplayArray = [];
-		for(var i = 0; i < divArray.length; i++) {
-			var inputType = answersArray.length > 1 ? "checkbox" : "radio";
-			var checked = selectedAnswer.includes(divArray[i]) ? "checked" : "";
-			var checkAnswerResult = checkAnswer(divArray[i]);
-			if (checkAnswerResult == "correct" || checkAnswerResult == "missed") 
-				answerDisplayArray.push(String.fromCharCode(i + 65));
-			answerDiv.innerHTML += returnTemplate(inputType, i, answerJson[divArray[i]].id, answerJson[divArray[i]].answer, checked, checkAnswerResult + "-background", checkAnswerResult, isDisplayAnswerLetters);
-		}
-
-	}
-
-	document.getElementById("display-answers").innerHTML = "<p><b>Answer: </b>" + answerDisplayArray.sort().join(", ").toUpperCase() + "</p>";
-
+                var inputType = answersArray.length > 1 ? "checkbox" : "radio";
+                var checked = selectedAnswer ? selectedAnswer.includes(answerId) : false;
+                var checkAnswerResult = checkAnswer(answerId, selectedAnswer, answersArray);
+                if (checkAnswerResult === "correct" || checkAnswerResult === "missed") {
+                    answerDisplayArray.push(String.fromCharCode(i + 65));
+                }
+                if (answerDiv) {
+                    answerDiv.innerHTML += returnTemplate(inputType, i, answerDetails.id, answerDetails.answer, checked, checkAnswerResult + "-background", checkAnswerResult, isDisplayAnswerLetters);
+                }
+            }
+            var displayAnswersEl = document.getElementById("display-answers");
+            if (displayAnswersEl) {
+                displayAnswersEl.innerHTML = "<p><b>Answer: </b>" + answerDisplayArray.sort().join(", ").toUpperCase() + "</p>";
+            }
+        }
+    });
 </script>

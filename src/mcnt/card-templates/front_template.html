@@ -1,5 +1,5 @@
 <script>
-    // v1.1.8 - https://github.com/SimonLammer/anki-persistence/blob/584396fea9dea0921011671a47a0fdda19265e62/script.js
+    // Persistence library (v1.1.8)
     if (typeof window.Persistence === "undefined") {
         var e = "github.com/SimonLammer/anki-persistence/",
             t = "_default";
@@ -98,8 +98,7 @@
 {{#number}}
 <h3>Question #{{number}}</h3>
 {{/number}} {{#question}}
-<!-- TTS_FRONT -->
-<p>{{question}}</p>
+<p id="question-p">{{question}}</p>
 {{/question}}
 <br />
 <div id="answer-div"></div>
@@ -167,6 +166,39 @@
     	var inputType = answersArray.length > 1 ? "checkbox" : "radio";
     	answerDiv.innerHTML += returnTemplate(inputType, i, answerJson[i].id, answerJson[i].answer, isDisplayAnswerLetters);
     }
+
+       // --- New Feature: Placeholder Replacement on the Front ---
+       (function() {
+           if (!divArray) return;
+
+           const originalIds = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+           const elementsToScan = document.querySelectorAll('#question-p, #answer-div');
+
+           elementsToScan.forEach(element => {
+               if (!element) return;
+               let content = element.innerHTML;
+
+               const regex = /\{\{ans:(\d+)\}\}/g;
+
+               let newContent = content.replace(regex, (placeholder, numberStr) => {
+                   const number = parseInt(numberStr, 10);
+                   if (number > 0 && number <= originalIds.length) {
+                       const originalId = originalIds[number - 1];
+                       const shuffledIndex = divArray.indexOf(originalId);
+
+                       if (shuffledIndex !== -1) {
+                           const letter = String.fromCharCode(shuffledIndex + 65);
+                           return `<b>${letter}</b>`;
+                       }
+                   }
+                   return placeholder;
+               });
+
+               if (content !== newContent) {
+                   element.innerHTML = newContent;
+               }
+           });
+       })();
 
     if (Persistence.isAvailable()) {
     	Persistence.clear();

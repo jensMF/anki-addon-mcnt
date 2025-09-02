@@ -25,18 +25,15 @@ def load_file(path: str) -> str:
     with open(get_addon_path() + path, encoding="utf-8") as f:
         return f.read()
 
-# --- JavaScript Injection (The Anki-approved way) ---
+# --- JavaScript Injection ---
 
 def on_card_will_show(html: str, card: Card, context: str) -> str:
     """
-    Appends the placeholder replacement script to the card's HTML when the answer is shown.
-    This is the correct way to add complex JS, as it avoids startup errors.
+    Appends the javascript to the card's HTML when the answer is shown.
     """
-    # Only run on the answer side in the reviewer, and only for our note type.
     if context != "reviewAnswer" or card.note_type()["name"] != mcnt_type_name:
         return html
 
-    # Read the script from the dedicated .js file and wrap it in a <script> tag.
     injected_script = f"<script>{load_file(script_path)}</script>"
     return html + injected_script
 
@@ -88,7 +85,6 @@ def setup_note_type(col: Collection) -> None:
     back_template = back_template.replace("<!-- TTS_BACK -->", tts_back_html)
     model["tmpls"][0]["afmt"] = back_template
 
-    # --- Configure Styling ---
     model["css"] = load_file(styling_template_path)
 
     # --- Save the model to the database ---
@@ -99,7 +95,7 @@ def setup_note_type(col: Collection) -> None:
 
 def on_profile_did_open() -> None:
     """
-    A hook that runs when a user profile is loaded to ensure the note type exists and is up to date.
+    A hook that runs when a user profile is loaded.
     """
     setup_note_type(mw.col)
 

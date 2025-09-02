@@ -1,6 +1,6 @@
 <script>
-    // Persistence library (v1.1.8)
-    if (typeof window.Persistence === "undefined") {
+    // v1.1.8 - https://github.com/SimonLammer/anki-persistence/blob/584396fea9dea0921011671a47a0fdda19265e62/script.js
+    if (void 0 === window.Persistence) {
         var e = "github.com/SimonLammer/anki-persistence/",
             t = "_default";
         if (
@@ -98,12 +98,19 @@
 {{#number}}
 <h3>Question #{{number}}</h3>
 {{/number}} {{#question}}
+<!-- TTS_FRONT -->
 <p id="question-p">{{question}}</p>
 {{/question}}
 <br />
 <div id="answer-div"></div>
 
 <script>
+       function toOrdinal(n) {
+           var s = ["th", "st", "nd", "rd"];
+           var v = n % 100;
+           return n + (s[(v - 20) % 10] || s[v] || s[0]);
+       }
+
     function returnTemplate(inputType, index, id, answer, displayAnswerLetters) {
     	var result = '<div class="answer-div">';
     	result += '<div><input type="' + inputType + '" onclick="selectAnswer();" name="SelectedAnswer" id="' + id + '" /></div>';
@@ -167,7 +174,6 @@
     	answerDiv.innerHTML += returnTemplate(inputType, i, answerJson[i].id, answerJson[i].answer, isDisplayAnswerLetters);
     }
 
-       // --- New Feature: Placeholder Replacement on the Front ---
        (function() {
            if (!divArray) return;
 
@@ -187,8 +193,12 @@
                        const shuffledIndex = divArray.indexOf(originalId);
 
                        if (shuffledIndex !== -1) {
-                           const letter = String.fromCharCode(shuffledIndex + 65);
-                           return `<b>${letter}</b>`;
+                           if (isDisplayAnswerLetters) {
+                               const letter = String.fromCharCode(shuffledIndex + 65);
+                               return `<b>${letter}</b>`;
+                           } else {
+                               return `<b>${toOrdinal(shuffledIndex + 1)}</b>`;
+                           }
                        }
                    }
                    return placeholder;

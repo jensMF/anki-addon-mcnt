@@ -171,7 +171,7 @@
                 if (!answerDetails) continue;
 
                 var inputType = answersArray.length > 1 ? "checkbox" : "radio";
-                var checked = selectedAnswer ? selectedAnswer.includes(answerId) : false;
+                var checked = selectedAnswer && selectedAnswer.includes(answerId) ? "checked" : "";
                 var checkAnswerResult = checkAnswer(answerId, selectedAnswer, answersArray);
                 if (checkAnswerResult === "correct" || checkAnswerResult === "missed") {
                     answerDisplayArray.push(String.fromCharCode(i + 65));

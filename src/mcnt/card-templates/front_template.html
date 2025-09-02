@@ -105,10 +105,24 @@
 <div id="answer-div"></div>
 
 <script>
-       function toOrdinal(n) {
-           var s = ["th", "st", "nd", "rd"];
-           var v = n % 100;
-           return n + (s[(v - 20) % 10] || s[v] || s[0]);
+       // These placeholders are replaced by the Python script in __init__.py
+       var isShuffle = __IS_SHUFFLE__;
+       var isDisplayAnswerLetters = __IS_DISPLAY_ANSWER_LETTERS__;
+       var ttsLang = "__TTS_LANG__";
+
+       function toOrdinal(n, lang) {
+           try {
+               const langCode = lang.split("-")[0];
+               const pr = new Intl.PluralRules(langCode, { type: "ordinal" });
+               const rule = pr.select(n);
+               if (langCode === "en") {
+                   const suffixes = { one: "st", two: "nd", few: "rd", other: "th" };
+                   return n + suffixes[rule];
+               }
+               return n + "."; // A safe, common international fallback.
+           } catch (e) {
+               return n.toString(); // Fallback in case of any error.
+           }
        }
 
     function returnTemplate(inputType, index, id, answer, displayAnswerLetters) {
@@ -197,7 +211,7 @@
                                const letter = String.fromCharCode(shuffledIndex + 65);
                                return `<b>${letter}</b>`;
                            } else {
-                               return `<b>${toOrdinal(shuffledIndex + 1)}</b>`;
+                               return `<b>${toOrdinal(shuffledIndex + 1, ttsLang)}</b>`;
                            }
                        }
                    }

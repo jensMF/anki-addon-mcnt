@@ -1,1 +1,1 @@
-{"config": {"TTSLang": "en_US", "isDisplayAnswerLetters": true, "isShuffle": true, "isTTS": false}}
+{"config": {"TTSLang": "en_US", "isDisplayAnswerLetters": false, "isShuffle": true, "isTTS": true}}

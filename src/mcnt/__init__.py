@@ -74,8 +74,7 @@ def setup_note_type(col: Collection) -> None:
 
     tts_front_html = ""
     if isTTS:
-        # The f-string requires doubling the braces to produce a single brace in the output.
-        tts_front_html = f'<div id="tts">{{{{tts {TTSLang} speed=0.8 voices=Apple_Samantha,Microsoft_Haruka:question}}}}</div>'
+        tts_front_html = '<div id="tts">{{tts ' + TTSLang + ' speed=0.8 voices=Apple_Samantha,Microsoft_Haruka:question}}</div>'
     front_template = front_template.replace("<!-- TTS_FRONT -->", tts_front_html)
     model["tmpls"][0]["qfmt"] = front_template
 
@@ -85,7 +84,7 @@ def setup_note_type(col: Collection) -> None:
 
     tts_back_html = "<b>Explanation: </b>"
     if isTTS:
-        tts_back_html = f'<b>Explanation: {{{{tts {TTSLang} speed=0.8 voices=Apple_Samantha,Microsoft_Haruka:explanation}}}}</b>'
+        tts_back_html = '<b>Explanation: {{tts ' + TTSLang + ' speed=0.8 voices=Apple_Samantha,Microsoft_Haruka:explanation}}</b>'
     back_template = back_template.replace("<!-- TTS_BACK -->", tts_back_html)
     model["tmpls"][0]["afmt"] = back_template
 

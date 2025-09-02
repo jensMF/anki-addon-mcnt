@@ -117,7 +117,7 @@
 {{/explanation}}
 
 <script>
-    // This variable is defined in the global scope so that the injected script can access it.
+    // This variable MUST be defined in the global scope so that the injected script from script.js can find it.
     var answerJsonLookUp = {
         {{#a}}"a" : { "id": "a", "answer": `{{a}}` },{{/a}}
         {{#b}}"b" : { "id": "b", "answer": `{{b}}` },{{/b}}
@@ -131,30 +131,30 @@
         {{#j}}"j" : { "id": "j", "answer": `{{j}}` },{{/j}}
     };
 
+    // Helper functions are defined globally for efficiency (so they aren't redefined on every card flip).
+    function returnTemplate(inputType, index, id, answer, checked, a ,b, displayAnswerLetters) {
+        var result = '<div class="answer-div ' + a + '">';
+        result += '<div><input type="' + inputType + '" class="disabled-input" id="' + id + '" ' + checked + ' /></div>';
+        if (displayAnswerLetters) result += '<div>' + String.fromCharCode(index + 65)+ '.</div>';
+        else result += '<div>&nbsp;</div>';
+        result += '<div><label for="' + id + '">' + answer + '</label></div>';
+        result += '<div class="' + b + '"></div></div>';
+        return result;
+    }
+
+    function checkAnswer(answerId, selectedAnswer, answersArray) {
+        if (!selectedAnswer) return answersArray.includes(answerId) ? "missed" : "";
+        if (selectedAnswer.includes(answerId) && answersArray.includes(answerId)) return "correct";
+        if (!selectedAnswer.includes(answerId) && answersArray.includes(answerId)) return "missed";
+        if (selectedAnswer.includes(answerId) && !answersArray.includes(answerId)) return "incorrect";
+        return "";
+    }
+
+    // The logic that manipulates the DOM must be inside onUpdateHook to prevent race conditions.
     onUpdateHook.push(function () {
-        // The code inside this hook runs only after the card's HTML is ready.
-
-        function returnTemplate(inputType, index, id, answer, checked, a ,b, displayAnswerLetters) {
-            var result = '<div class="answer-div ' + a + '">';
-            result += '<div><input type="' + inputType + '" class="disabled-input" id="' + id + '" ' + checked + ' /></div>';
-            if (displayAnswerLetters) result += '<div>' + String.fromCharCode(index + 65)+ '.</div>';
-            else result += '<div>&nbsp;</div>';
-            result += '<div><label for="' + id + '">' + answer + '</label></div>';
-            result += '<div class="' + b + '"></div></div>';
-            return result;
-        }
-
-        function checkAnswer(answerId, selectedAnswer, answersArray) {
-            if (!selectedAnswer) return answersArray.includes(answerId) ? "missed" : "";
-            if (selectedAnswer.includes(answerId) && answersArray.includes(answerId)) return "correct";
-            if (!selectedAnswer.includes(answerId) && answersArray.includes(answerId)) return "missed";
-            if (selectedAnswer.includes(answerId) && !answersArray.includes(answerId)) return "incorrect";
-            return "";
-        }
-
         var answersArray = `{{answers}}`.toLowerCase().split(",");
-
         var selectedAnswer, divArray;
+
         if (Persistence.isAvailable()) {
             selectedAnswer = Persistence.getItem("SelectedAnswer");
             divArray = Persistence.getItem("_MCNT_DivArray");
@@ -162,7 +162,7 @@
 
         if (divArray) {
             var answerDiv = document.getElementById('answer-div');
-            if (answerDiv) answerDiv.innerHTML = "";
+            if (answerDiv) answerDiv.innerHTML = ""; // Clear previous answers
 
             var answerDisplayArray = [];
             for (var i = 0; i < divArray.length; i++) {

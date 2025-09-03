@@ -6,8 +6,8 @@ from functools import cache
 from typing import Any
 
 # --- Add-on Configuration ---
-mcnt_type_name = "Dynamic MCNT Type"
-mcnt_card_name = "Dynamic MCNT Card"
+mcnt_type_name = "Dynamic Multiple Choice Note Type"
+mcnt_card_name = "Dynamic Multiple Choice Note Card"
 
 # --- File Paths ---
 front_template_path = "card-templates/front_template.html"
